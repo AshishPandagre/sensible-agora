@@ -52,23 +52,17 @@
 
 <!-- JS Includes go here -->
 <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.11.js"></script>
-<!-- <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"
+    integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-<!-- agora client code -->
+<!-- agora client code 2 -->
+
 <script>
-    const agoraAppId = "4809783b25404fbaaef4c36bfa93b51f";
+    const agoraAppId = "6d2f3453d8d4460b991c827610adc76b";
 
-    // const channelName = "meeting";
-    // const channelName = "meeting-ayo";
     const channelName = window.location.pathname.slice(1);
-    
-    let token_a = "007eJxTYIhZF+8+STFocewzCw0LxyMPDeaoV1Wv+PfnyILFn06Uv/RRYDCxMLA0tzBOMjI1MTBJS0pMTE0zSTY2S0pLtDROMjVM+36VK7lMnSf55r4tLIwMEAjiszPkpqaWZOalMzAAADMQI9U=";        // for channel meeting
-    let token_b = "007eJxTYEjd2SHG/ocxXZ41b22KVYjs+QxtxaK+F3Iqjicens/R/afAYGJhYGluYZxkZGpiYJKWlJiYmmaSbGyWlJZoaZxkapgW/ZQr+ZYZT3Lm3DgGRigE8bkZclNTSzLz0nUTK/MZGAB3ZSEg";       // for channel meeting-ayo
-    
-    let token;
-    if(channelName==="meeting") token = token_a;
-    else token = token_b;
 
     let channelNameContainer = document.getElementById("channelName");
     channelNameContainer.innerText = channelName;
@@ -93,59 +87,79 @@
         if (remoteDiv) remoteDiv.parentNode.removeChild(remoteDiv);
     };
 
-    let client = AgoraRTC.createClient({
-        mode: "rtc",
-        codec: "vp8",
-    });
+    var token;
+    async function getToken() {
+        obj = await axios.get('http://localhost:8080/access_token', {
+            params: {
+                channelName: channelName,
+            }
+        })
+        token = obj.data.token;
+    }
 
-    client.init("yourAppId", function () {
-        console.log("client initialized");
-    }, function (err) {
-        alert("client init failed ", err);
-    });
+    async function initClient() {
+        await getToken();
 
-    // Join a channel
-    client.join(token, channelName, null, (uid) => {
-        // Create a local stream
-        let localStream = AgoraRTC.createStream({
-            audio: true,
-            video: true,
+        // token = "0066d2f3453d8d4460b991c827610adc76bIAD7sOi3Lwxldto9WUbqOvNvQYEXB9usIKeYJYJ/PIVJfvsDsI4AAAAAIgAJ/Vd21xkNYwQAAQDXtkJjAgDXtkJjAwDXtkJjBADXtkJj";
+
+        alert(token);
+
+        let client = AgoraRTC.createClient({
+            mode: "rtc",
+            codec: "vp8",
         });
-        localStream.init(() => {
-            localStream.play("me");                         // Play the local stream
-            client.publish(localStream, handleError);       // Publish the local stream
+
+        client.init(agoraAppId, function () {
+            console.log("client initialized");
+        }, function (err) {
+            alert("client init failed ", err);
+        });
+
+        // Join a channel
+        client.join(token, channelName, null, (uid) => {
+            // Create a local stream
+            let localStream = AgoraRTC.createStream({
+                audio: true,
+                video: true,
+            });
+            localStream.init(() => {
+                localStream.play("me");                         // Play the local stream
+                client.publish(localStream, handleError);       // Publish the local stream
+            }, handleError);
         }, handleError);
-    }, handleError);
 
-    // Subscribe to the remote stream when it is published
-    client.on("stream-added", function (evt) {
-        client.subscribe(evt.stream, handleError);
-    });
+        // Subscribe to the remote stream when it is published
+        client.on("stream-added", function (evt) {
+            client.subscribe(evt.stream, handleError);
+        });
 
-    // Play the remote stream when it is subsribed
-    client.on("stream-subscribed", function (evt) {
-        let stream = evt.stream;
-        let streamId = String(stream.getId());
-        addVideoStream(streamId);
-        stream.play(streamId);
-    });
+        // Play the remote stream when it is subsribed
+        client.on("stream-subscribed", function (evt) {
+            let stream = evt.stream;
+            let streamId = String(stream.getId());
+            addVideoStream(streamId);
+            stream.play(streamId);
+        });
 
-    // Remove the corresponding view when a remote user unpublishes.
-    client.on("stream-removed", function (evt) {
-        let stream = evt.stream;
-        let streamId = String(stream.getId());
-        stream.close();
-        removeVideoStream(streamId);
-    });
+        // Remove the corresponding view when a remote user unpublishes.
+        client.on("stream-removed", function (evt) {
+            let stream = evt.stream;
+            let streamId = String(stream.getId());
+            stream.close();
+            removeVideoStream(streamId);
+        });
 
-    // Remove the corresponding view when a remote user leaves the channel.
-    client.on("peer-leave", function (evt) {
-        let stream = evt.stream;
-        let streamId = String(stream.getId());
-        stream.close();
-        removeVideoStream(streamId);
-    });
+        // Remove the corresponding view when a remote user leaves the channel.
+        client.on("peer-leave", function (evt) {
+            let stream = evt.stream;
+            let streamId = String(stream.getId());
+            stream.close();
+            removeVideoStream(streamId);
+        });
+    }
+
+
+
 </script>
-
 
 </html>
