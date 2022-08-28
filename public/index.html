@@ -6,30 +6,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
+<style>
+    * {
+        font-family: sans-serif;
+    }
+
+    h1,
+    h4 {
+        text-align: center;
+    }
+
+    #me {
+        position: relative;
+        width: 50%;
+        margin: 0 auto;
+        display: block;
+    }
+
+    #me video {
+        position: relative !important;
+    }
+
+    #remote-container {
+        display: flex;
+    }
+
+    #remote-container video {
+        height: auto;
+        position: relative !important;
+    }
+</style>
+
 <body>
     <h1>
         Video Call<br>
     </h1>
-    <small id="channelName">channelName: </small>
-    
+    <p>channelName: <small id="channelName"></small></p>
+
     <h4>Local video</h4>
     <div id="me"></div>
     <h4>Remote video</h4>
     <div id="remote-container">
     </div>
 </body>
-<!-- CSS Includes go here -->
-<link rel="stylesheet" type="text/css" href="style.css" />
 
 <!-- JS Includes go here -->
 <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.11.js"></script>
 
 <script>
     const agoraAppId = "4809783b25404fbaaef4c36bfa93b51f";
+
     // const channelName = "meeting";
-    const channelName = "meeting-ayo";
-    // const token = "007eJxTYIhZF+8+STFocewzCw0LxyMPDeaoV1Wv+PfnyILFn06Uv/RRYDCxMLA0tzBOMjI1MTBJS0pMTE0zSTY2S0pLtDROMjVM+36VK7lMnSf55r4tLIwMEAjiszPkpqaWZOalMzAAADMQI9U=";        // for channel meeting
-    const token = "007eJxTYEjd2SHG/ocxXZ41b22KVYjs+QxtxaK+F3Iqjicens/R/afAYGJhYGluYZxkZGpiYJKWlJiYmmaSbGyWlJZoaZxkapgW/ZQr+ZYZT3Lm3DgGRigE8bkZclNTSzLz0nUTK/MZGAB3ZSEg";       // for channel meeting-ayo
+    // const channelName = "meeting-ayo";
+    const channelName = window.location.pathname.slice(1);
+    
+    let token_a = "007eJxTYIhZF+8+STFocewzCw0LxyMPDeaoV1Wv+PfnyILFn06Uv/RRYDCxMLA0tzBOMjI1MTBJS0pMTE0zSTY2S0pLtDROMjVM+36VK7lMnSf55r4tLIwMEAjiszPkpqaWZOalMzAAADMQI9U=";        // for channel meeting
+    let token_b = "007eJxTYEjd2SHG/ocxXZ41b22KVYjs+QxtxaK+F3Iqjicens/R/afAYGJhYGluYZxkZGpiYJKWlJiYmmaSbGyWlJZoaZxkapgW/ZQr+ZYZT3Lm3DgGRigE8bkZclNTSzLz0nUTK/MZGAB3ZSEg";       // for channel meeting-ayo
+    
+    let token;
+    if(channelName==="meeting") token = token_a;
+    else token = token_b;
+
+    let channelNameContainer = document.getElementById("channelName");
+    channelNameContainer.innerText = channelName;
     let remoteContainer = document.getElementById("remote-container");
 
     // Handle errors.
@@ -57,7 +96,7 @@
     });
 
     client.init("yourAppId", function () {
-        alert("client initialized");
+        console.log("client initialized");
     }, function (err) {
         alert("client init failed ", err);
     });
