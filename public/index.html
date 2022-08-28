@@ -52,7 +52,9 @@
 
 <!-- JS Includes go here -->
 <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.11.js"></script>
+<script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
 
+<!-- agora client code -->
 <script>
     const agoraAppId = "4809783b25404fbaaef4c36bfa93b51f";
 
@@ -142,6 +144,11 @@
         stream.close();
         removeVideoStream(streamId);
     });
+</script>
+
+<!-- socket io client code -->
+<script>
+    let socket = io();
 </script>
 
 </html>
