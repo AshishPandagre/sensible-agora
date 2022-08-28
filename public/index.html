@@ -10,6 +10,8 @@
     <h1>
         Video Call<br>
     </h1>
+    <small id="channelName">channelName: </small>
+    
     <h4>Local video</h4>
     <div id="me"></div>
     <h4>Remote video</h4>
@@ -24,9 +26,10 @@
 
 <script>
     const agoraAppId = "4809783b25404fbaaef4c36bfa93b51f";
-    const channelName = "meeting";
-    const token = "007eJxTYIhZF+8+STFocewzCw0LxyMPDeaoV1Wv+PfnyILFn06Uv/RRYDCxMLA0tzBOMjI1MTBJS0pMTE0zSTY2S0pLtDROMjVM+36VK7lMnSf55r4tLIwMEAjiszPkpqaWZOalMzAAADMQI9U=";
-
+    // const channelName = "meeting";
+    const channelName = "meeting-ayo";
+    // const token = "007eJxTYIhZF+8+STFocewzCw0LxyMPDeaoV1Wv+PfnyILFn06Uv/RRYDCxMLA0tzBOMjI1MTBJS0pMTE0zSTY2S0pLtDROMjVM+36VK7lMnSf55r4tLIwMEAjiszPkpqaWZOalMzAAADMQI9U=";        // for channel meeting
+    const token = "007eJxTYEjd2SHG/ocxXZ41b22KVYjs+QxtxaK+F3Iqjicens/R/afAYGJhYGluYZxkZGpiYJKWlJiYmmaSbGyWlJZoaZxkapgW/ZQr+ZYZT3Lm3DgGRigE8bkZclNTSzLz0nUTK/MZGAB3ZSEg";       // for channel meeting-ayo
     let remoteContainer = document.getElementById("remote-container");
 
     // Handle errors.
