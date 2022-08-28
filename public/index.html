@@ -52,7 +52,8 @@
 
 <!-- JS Includes go here -->
 <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.11.js"></script>
-<script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+<!-- <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script> -->
+
 
 <!-- agora client code -->
 <script>
@@ -80,24 +81,14 @@
 
     // Add video streams to the container.
     function addVideoStream(elementId) {
-        let parentDiv = document.createElement("div");
-        parentDiv.id = `${elementId}-parent`;
-
         let streamDiv = document.createElement("div");
         streamDiv.id = elementId;
         streamDiv.style.transform = "rotateY(180deg)";
-
-        let inviteButton = document.createElement("button");
-        inviteButton.innerText = "Invite";
-
-        parentDiv.appendChild(streamDiv);
-        parentDiv.appendChild(inviteButton);
-        remoteContainer.appendChild(parentDiv);
+        remoteContainer.appendChild(streamDiv);
     };
 
     // Remove the video stream from the container.
     function removeVideoStream(elementId) {
-        let remoteParentDiv = document.createElement(`${elementId}-parent`);
         let remoteDiv = document.getElementById(elementId);
         if (remoteDiv) remoteDiv.parentNode.removeChild(remoteDiv);
     };
@@ -156,9 +147,5 @@
     });
 </script>
 
-<!-- socket io client code -->
-<script>
-    let socket = io();
-</script>
 
 </html>
